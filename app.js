@@ -1,56 +1,45 @@
 const fs = require("fs");
 
-
-
 let dir = "posts";
 let dirBuild = "build";
 let postName ="";
 let watcher = fs.watch(dir,function(){
-    //console.log(type + ' ' + filename);
      start();
 });
 
 
-
-
 function start() {
 	
-fs.readdir(dir, function(err, files) {
+	fs.readdir(dir, function(err, files) {
+	  if (err){
+	  	console.log(err);
+	  }
 
-  if (err){
-  	console.log(err);
-  }
-
-console.log(files)
 
 	for(let file of files){
 
+			fs.readFile(`${dir}/${file}`, function(err, data){
+				if(err){
+					console.log(err);
+				}
+				let newHtml = `
+					 <html>
+					 	<body>
+					 		<div>${data}</div>
+					 	</body>
+					 </html>`;
 
-		fs.readFile(`${dir}/${file}`, function(err, data){
-			if(err){
-				console.log(err);
-			}
-			let newHtml = `
-				 <html>
-				 	<body>
-				 		<div>${data}</div>
-				 	</body>
-				 </html>`
+			 	fs.writeFile(`${dirBuild}/${file.slice(0, -4)}.html`, newHtml.trim(), function(err) {
+			      if(err){
+			      	console.log(err);
+			      }
+			      console.log(file.slice(0, -4) + ".html created");
+			 	});//end fs.writeFile
+		    });//end fs.readFile
 
-		 	fs.writeFile(`${dirBuild}/${file.slice(0, -4)}.html`, newHtml.trim(), function(err) {
-		      if(err){
-		      	console.log(err);
-		      }
-		      console.log(file.slice(0, -4) + ".html created");
-		 	});
-	    });
+		    postName += "<li>" + "<a href='"+ file.slice(0, -4) + ".html'>" + file.slice(0, -4) + "</a></li>";
 
-		//console.log('name: '+ file.slice(0, -4));
-
-	    postName += "<li>" + "<a href='"+ file.slice(0, -4) + ".html'>" + file.slice(0, -4) + "</a></li>";
-
-
-	}
+	}//end for loop
 
 
 
@@ -67,21 +56,19 @@ console.log(files)
 	      	console.log(err);
 	      }
 	      console.log("index.html created");
-	 	});
+	 	});//end fs.writeFile
 	postName = "";
-});
-
-//track changes later
+	});//end fs.readdir
 
 
-};
+};//end function start
 
 start();
 
 watcher.on('error', function (err) {
     console.error(err);
     process.exit(1);
-});
+});//end watcher
 
 
 

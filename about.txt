@@ -1,0 +1,6 @@
+Daniel Wajsman
+Priscila Hamaguchi
+Michika Hiratsuka
+
+We made a static site generator. If you execute "app.js", new HTML files from .txt files and index.html would be createdin the build directory.Also, our system observes the post directory and would create the new HTML files if other .txt files are uploaded.
+ 
